@@ -1,6 +1,5 @@
 # node_modules can be installed using yarn install, shouldn't be added to repo
-node_modules/
-
+node_modules
 
 # Mac metadata file
 .DS_Store

@@ -1,39 +1,40 @@
 package edu.brown.cs.student.api;
 
-import edu.brown.cs.student.csv.ReaderCounts;
-import java.util.List;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
+/**
+ * This class is used to store information about the state of the server, such as the currently
+ * loaded data.
+ *
+ * <p>This data can be passed to various command handlers, allowing them to talk to eachother
+ * (access/modify shared data).
+ */
 public class ServerState {
-  private String filename;
-  private List<List<String>> loadedCSV;
-  private ReaderCounts loadedCounts;
+  // This can be any data you want to store
+  private Set<String> stringSet;
 
   public ServerState() {
-    this.filename = "";
-    this.loadedCSV = null;
+    this.stringSet = new HashSet<String>();
   }
 
-  public String getFilename() {
-    return filename;
+  /**
+   * Attempts to add string to the stringSet
+   *
+   * @param s the string to add
+   * @return true if it was successfully added, false otherwise (if it already existed)
+   */
+  public boolean addToSet(String s) {
+    return stringSet.add(s);
   }
 
-  public void setFilename(String filename) {
-    this.filename = filename;
-  }
-
-  public List<List<String>> getLoadedCSV() {
-    return loadedCSV;
-  }
-
-  public void setLoadedCSV(List<List<String>> loadedCSV) {
-    this.loadedCSV = loadedCSV;
-  }
-
-  public ReaderCounts getLoadedCounts() {
-    return loadedCounts;
-  }
-
-  public void setLoadedCounts(ReaderCounts loadedCounts) {
-    this.loadedCounts = loadedCounts;
+  /**
+   * Returns an immutable version of the stringSet
+   *
+   * @return an immutable version of the stringSet
+   */
+  public Set<String> getStringSet() {
+    return Collections.unmodifiableSet(stringSet);
   }
 }

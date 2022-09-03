@@ -2,8 +2,6 @@ package edu.brown.cs.student.api;
 
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
-import java.util.ArrayList;
-import java.util.List;
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -27,37 +25,45 @@ public class AddToSetHandler implements Route {
    * field. We will add the value to the set.
    */
   public record AddStringRequestBody(String key) {}
-  // (We have a similar contract that the response is of form stringSetAsList: string[], message: string) )
-  public record AddStringResponseBody(List<String> stringSetAsList, String message) {}
+  /** We also have a structure to define our response to the frontend. */
+  public record AddStringResponseBody(String message) {}
 
   @Override
   public Object handle(Request request, Response response) throws Exception {
-    // Parse the request body into a request object
+
+    // Set up the adapters we need for reading the request and writing the response
     Moshi moshi = new Moshi.Builder().build();
     JsonAdapter<AddStringRequestBody> requestJsonAdapter =
         moshi.adapter(AddStringRequestBody.class);
+    JsonAdapter<AddStringResponseBody> responseJsonAdapter =
+        moshi.adapter(AddStringResponseBody.class);
+
+    // Parse the request body into a request object
     AddStringRequestBody requestBody = requestJsonAdapter.fromJson(request.body());
+    // TODO: Add error handling for IOException & JsonDataException for badly formatted requests
 
-    // TODO: Add error handling above
+    // DEBUG:
+    System.out.println("Server receieved request with body: " + request.body());
 
-    System.out.println("reqbody key: " + requestBody.key);
-    System.out.println("(raw request body): " + request.body());
-
-    // TODO: Replace with backend logic connecting with serverstate
-    ArrayList<String> demo = new ArrayList<String>();
-    demo.add("hello");
-    demo.add("world");
+    // Some example checks for improper client requests
+    if (requestBody.key == "") {
+      response.status(400); // Indicate bad request
+      return responseJsonAdapter.toJson(
+          new AddStringResponseBody(
+              "I have decided for an arbitrary reason not to allow the empty string!"));
+    }
+    if (!this.state.addToSet(requestBody.key)) {
+      response.status(400); // Bad request
+      throw new APIException("ERROR: Key \"" + requestBody.key + "\"already exists");
+    }
 
     // Construct the contents of the response
     AddStringResponseBody responseBody =
-        new AddStringResponseBody(demo, "some informative message");
+        new AddStringResponseBody(requestBody.key + " added to the string list");
 
     // Turn the response into JSON and return it (to the frontend)
-    JsonAdapter<AddStringResponseBody> responseJsonAdapter =
-        moshi.adapter(AddStringResponseBody.class);
-    String jsonResponseBody = responseJsonAdapter.toJson(responseBody);
-    response.status(200); // Informs the frontend that the request was successful
-    System.out.println("Returning: " + jsonResponseBody);
-    return jsonResponseBody;
+    responseJsonAdapter.toJson(responseBody);
+    response.status(200); // Indicate request was successful
+    return responseJsonAdapter.toJson(responseBody);
   }
 }

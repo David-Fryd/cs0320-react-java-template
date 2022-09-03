@@ -1,6 +1,8 @@
 package edu.brown.cs.student.main;
 
+import edu.brown.cs.student.api.APIExceptionHandler;
 import edu.brown.cs.student.api.AddToSetHandler;
+import edu.brown.cs.student.api.GetSetHandler;
 import edu.brown.cs.student.api.ServerState;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
@@ -68,12 +70,15 @@ public final class Main {
 
     Spark.before((request, response) -> response.header("Access-Control-Allow-Origin", "*"));
 
-    // Creates the shared "serverState" object that will be used by all endpoints that need to
-    // access shared data
+    // Shared "serverState" object used by all endpoints that need to access shared data
     ServerState serverState = new ServerState();
+
     // Add all endpoints here
     Spark.post("/addtoset", new AddToSetHandler(serverState));
+    Spark.get("/getset", new GetSetHandler(serverState));
     // ...
 
+    // When there is an error on the API side, this handler will be called
+    Spark.exception(Exception.class, new APIExceptionHandler());
   }
 }

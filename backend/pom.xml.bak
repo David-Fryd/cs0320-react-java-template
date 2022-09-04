@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>edu.brown.cs32</groupId>
+  <artifactId>s0</artifactId>
+  <version>1.0-SNAPSHOT</version>
+
+  <properties>
+
+    <!-- Using latest LTS version (17) -->
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+
+    <!-- Defines UTF-8 encoding -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    <!-- SortPom -->
+    <sortpom.version>3.0.0</sortpom.version>
+
+    <!-- Spotless -->
+    <spotless.version>2.22.8</spotless.version>
+  </properties>
+
+  <dependencies>
+
+    <!--
+            junit is a testing framework.
+            http://junit.org/junit4/.
+        -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13.2</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sparkjava</groupId>
+      <artifactId>spark-core</artifactId>
+      <version>2.5.4</version>
+    </dependency>
+
+    <!--
+        Simple Logging Facade for Java is a logging tool for debugging.
+        https://www.slf4j.org/.
+    -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>2.0.0-alpha1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-jdk14</artifactId>
+      <version>2.0.0-alpha1</version>
+    </dependency>
+    <!--Used for JSON parsing -->
+    <dependency>
+      <groupId>com.squareup.moshi</groupId>
+      <artifactId>moshi</artifactId>
+      <version>1.13.0</version>
+    </dependency>
+     <!--Used for argument parsing-->
+    <dependency>
+      <groupId>net.sf.jopt-simple</groupId>
+      <artifactId>jopt-simple</artifactId>
+      <version>4.3</version>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <!--
+            The Compiler Plugin is used to compile the sources of your project.
+      -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.1</version>
+        <configuration>
+          <source>${maven.compiler.source}</source>
+          <target>${maven.compiler.target}</target>
+        </configuration>
+      </plugin>
+
+      <!--
+            We use Spotless to automate style checking and code formatting.
+      -->
+      <plugin>
+        <groupId>com.diffplug.spotless</groupId>
+        <artifactId>spotless-maven-plugin</artifactId>
+        <version>${spotless.version}</version>
+        <configuration>
+          <java>
+            <!-- style checking + formatting will apply to these files -->
+            <includes>
+              <include>src/main/java/**/*.java</include>
+              <include>src/test/java/**/*.java</include>
+            </includes>
+
+            <!-- standard import order -->
+            <importOrder/>
+            <!-- self-explanatory -->
+            <removeUnusedImports/>
+            <!-- use google-java-format: https://github.com/google/google-java-format -->
+            <googleJavaFormat/>
+          </java>
+        </configuration>
+        <executions>
+          <!-- checks formatting during compilation; will fail if errors exist -->
+          <execution>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <phase>compile</phase>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!--
+            We use SortPom to apply ordering and formatting to this pom.xml file.
+      -->
+      <plugin>
+        <groupId>com.github.ekryd.sortpom</groupId>
+        <artifactId>sortpom-maven-plugin</artifactId>
+        <version>${sortpom.version}</version>
+        <configuration>
+          <predefinedSortOrder>custom_1</predefinedSortOrder>
+          <lineSeparator>\n</lineSeparator>
+          <encoding>${project.build.sourceEncoding}</encoding>
+          <sortProperties>true</sortProperties>
+          <sortDependencies>scope</sortDependencies>
+          <expandEmptyElements>false</expandEmptyElements>
+        </configuration>
+        <executions>
+          <!-- sorts the pom.xml file during the compile phase -->
+          <execution>
+            <goals>
+              <goal>sort</goal>
+            </goals>
+            <phase>compile</phase>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!--
+           We use SpotBugs to detect bugs automatically.
+      -->
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+        <version>4.6.0.0</version>
+        <dependencies>
+          <!-- overwrite dependency on spotbugs if you want to specify the version of spotbugs -->
+          <dependency>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs</artifactId>
+            <version>4.7.0</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+
+      <!-- todo: update maven project for these changes to be reflected
+https://stackoverflow.com/questions/16399221/changing-pom-xml-doesnt-update-libraries-in-eclipse -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.19.1</version>
+      </plugin>
+      
+
+    </plugins>
+  </build>
+
+</project>

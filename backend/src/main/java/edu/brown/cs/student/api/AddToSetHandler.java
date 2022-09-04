@@ -43,17 +43,20 @@ public class AddToSetHandler implements Route {
     // TODO: Add error handling for IOException & JsonDataException for badly formatted requests
 
     // DEBUG:
-    System.out.println("Server receieved request with body: " + request.body());
+    System.out.println("Server (addtoset) receieved request with body: " + request.body());
 
     // Some example checks for improper client requests
     if (requestBody.key == "") {
       response.status(400); // Indicate bad request
+      System.out.println("Server (addtoset) sending error back to client: Empty string"); // DEBUG
       return responseJsonAdapter.toJson(
           new AddStringResponseBody(
               "I have decided for an arbitrary reason not to allow the empty string!"));
     }
     if (!this.state.addToSet(requestBody.key)) {
       response.status(400); // Bad request
+      System.out.println(
+          "Server (addtoset) sending error back to client: Key already exists"); // DEBUG
       throw new APIException("ERROR: Key \"" + requestBody.key + "\"already exists");
     }
 
@@ -62,8 +65,11 @@ public class AddToSetHandler implements Route {
         new AddStringResponseBody(requestBody.key + " added to the string list");
 
     // Turn the response into JSON and return it (to the frontend)
-    responseJsonAdapter.toJson(responseBody);
+    // responseJsonAdapter.toJson(responseBody);
     response.status(200); // Indicate request was successful
+    System.out.println(
+        "Server (addtoset) responding with body: "
+            + responseJsonAdapter.toJson(responseBody)); // DEBUG
     return responseJsonAdapter.toJson(responseBody);
   }
 }

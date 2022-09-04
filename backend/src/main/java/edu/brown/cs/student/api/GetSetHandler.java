@@ -33,8 +33,15 @@ public class GetSetHandler implements Route {
     // Convert the set into a list because JSON doesn't support sets
     List<String> stringSetAsList = new ArrayList<>(this.state.getStringSet());
 
+    // DEBUG
+    System.out.println("Server (getset) receieved request.");
+
     // Return the response
     response.status(200); // Indicate request was successful
+    System.out.println(
+        "Server (getset) responding with body:"
+            + responseJsonAdapter.toJson(
+                new GetSetResponseBody(stringSetAsList, "Set returned as list")));
     return responseJsonAdapter.toJson(
         new GetSetResponseBody(stringSetAsList, "Set returned as list"));
   }

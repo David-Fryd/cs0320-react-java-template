@@ -1,16 +1,10 @@
 package api;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-
-import org.junit.Before;
-import org.junit.BeforeClass;
-
 import edu.brown.cs.student.api.AddToSetHandler;
 import edu.brown.cs.student.api.GetSetHandler;
 import edu.brown.cs.student.api.ServerState;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import spark.Spark;
 
 public class APITest {
